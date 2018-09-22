@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"  
+	xsi:schemaLocation="http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop    
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+<!--配置哨兵模式  -->
+ 
+ <bean id="redisSentinelConfiguration" class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
+    <constructor-arg name="propertySource" ref="propertySource"/>
+</bean>
+
+<bean name="propertySource" class="org.springframework.core.io.support.ResourcePropertySource">
+    <constructor-arg name="location" value="classpath:redis-sentinel.properties" />
+</bean>
+ 
+ 
+ 
+ 
+ 
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="300" />
+		<property name="maxTotal" value="30" />
+		<property name="maxWaitMillis" value="1000" />
+		<property name="testOnBorrow" value="true" />
+	</bean>
+
+	<!-- Spring-redis连接池管理工厂 -->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+	  <constructor-arg name="sentinelConfig" ref="redisSentinelConfiguration"/>
+	  <constructor-arg name="poolConfig" ref="poolConfig"/>  
+	 <!--<property name="poolConfig" ref="poolConfig" />   如果不是哨兵模式，把这行放开，注释掉上面两行的构造方法注入
+         <property name="hostName" value="127.0.0.1"/>  
+	     <property name="port" value="6389"/> 
+         <property name="password" value=""/>  -->
+	 </bean>
+	 
+	 
+	 
+	
+	<!-- 使用中间类解决RedisCache.jedisConnectionFactory的静态注入，从而使MyBatis实现第三方缓存 -->
+	<bean id="redisCacheTransfer" class="cn.com.his.web.controller.RedisCacheTransfer">
+		<property name="jedisConnectionFactory" ref="jedisConnectionFactory" />
+	</bean>
+	
+
+
+
+</beans>

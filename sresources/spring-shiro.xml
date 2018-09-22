@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="   
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop 
+  http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/tx  
+http://www.springframework.org/schema/tx/spring-tx.xsd 
+http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/util 
+   http://www.springframework.org/schema/util/spring-util.xsd
+http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<!-- Shiro 的Web过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<!-- <property name="loginUrl" value="/jsp/user/login.jsp"></property> -->
+		<property name="filterChainDefinitions">
+			<value>  
+				/patientController/list.do=anon
+				/patientController/**=anon
+				/**=anon    
+				                                       
+			</value>  
+        
+
+
+		</property>
+
+
+
+
+	</bean>
+
+	<!-- <bean id="LoginShiroFilter" class="cn.com.his.core.utils.LoginShiroFilter"></bean> -->
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="customRealm" />
+	</bean>
+
+
+	<!-- 自定义 realm -->
+	<bean id="customRealm" class="cn.com.his.other.controller.MyReale"></bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+
+
+</beans>
+
+
+<!-- admins/**=anon # 表示该 uri 可以匿名访问 /admins/**=authc # 表示该 uri 需要认证才能访问 /admins/**=authcBasic # 表示该 uri 需要 httpBasic 认证 /admins/**=perms[user:add:*] # 表示该 uri 需要认证用户拥有 user:add:* 权限才能访问 /admins/**=port[8081] # 表示该 uri 需要使用 8081 端口 /admins/**=rest[user] # 相当于 /admins/**=perms[user:method]，其中，method 表示 get、post、delete 等 /admins/**=roles[admin] # 表示该 uri 需要认证用户拥有 admin 角色才能访问 /admins/**=ssl # 表示该 uri 需要使用 https 协议 /admins/**=user # 表示该 uri 需要认证或通过记住我认证才能访问 /logout=logout # 表示注销,可以当作固定配置 -->

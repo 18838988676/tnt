@@ -1,0 +1,9 @@
+http://localhost:8080/tnt/druid/index.html
+
+
+  <a href="http://localhost:8080/tnt/websocket/allwho.do">谁在线</a>
+	请输入：
+	<textarea rows="5" cols="10" id="inputMsg" name="inputMsg"></textarea>
+	<button onclick="doSend();">发送</button>
+	
+	http://localhost:8080/tnt/jsp/user/login.jsp
