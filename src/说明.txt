@@ -6,7 +6,7 @@ redis-server --service-install redis.windows-service6380.conf  --service-name ww
 
 
 
-
+12
 
 
 本tnt  使用了redis的哨兵模式：
